@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.IO; 
 using System.Linq;
+using System.Threading.Tasks;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -14,7 +15,6 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using Tweetinvi;
-
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -34,24 +34,55 @@ namespace FashionFace
 
         public MainPage()
         {
+            Auth.SetUserCredentials(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
+
+            var stream = Tweetinvi.Stream.CreateFilteredStream();
+
+            
+            stream.AddTrack("fashion");
+
+            Console.WriteLine("I am listening to Twitter");
+
+            stream.MatchingTweetReceived += (sender, argument) =>
+            {
+                //   testi.Content = argument.Tweet.Text;
+                //         TextBlock textBlock1 = new TextBlock();
+
+                //        testi.Content = argument.Tweet.Text;
+                changeText(argument.Tweet.Text);
+                tweetText.Text = argument.Tweet.Text;
+            };
+            
+            
+            stream.StartStreamMatchingAllConditionsAsync();
+
 
             this.InitializeComponent();
 
-            // Set up your credentials (https://apps.twitter.com)
 
-            
-      //      Console.WriteLine(user);
-        //    Console.ReadKey();
-            // Publish the Tweet "Hello World" on your Timeline
 
-    //        
+
+       //     stream.StopStream();
+     //       stream.AddTweetLanguageFilter()
         }
+
+        private async Task<object> changeText(string text)
+        {
+            tweetText.Text = text;
+            return Task.FromResult<object>(null);
+        }
+
+
 
         private void testi_Click(object sender, RoutedEventArgs e)
         {
-            Auth.SetUserCredentials(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
-            var user = User.GetAuthenticatedUser();
-            testi.Content = user.Name;
+            tweetText.Text = "hello";
+            //  var user = User.GetUserFromId(759251);
+            //   testi.Content = user.Name;
+            //       var user = User.GetAuthenticatedUser();
+
+
+            //     testi.Content = user.Name;
         }
     }
 }
