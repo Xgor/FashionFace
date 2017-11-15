@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO; 
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using Tweetinvi;
+using Windows.UI.Core;
+using Tweetinvi.Events;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -24,6 +26,7 @@ namespace FashionFace
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+   
     
     public sealed partial class MainPage : Page
     {
@@ -31,6 +34,7 @@ namespace FashionFace
         const string CONSUMER_SECRET = "wE1vANcHrhASvUTm7jOC0ItXgAnELNvK2OC5vi9MXWj5Rl0HUe";
         const string ACCESS_TOKEN = "1077212670-MwVEf6ryJSmqVjhW1q25UYck9j176k9qhQSV2GO";
         const string ACCESS_TOKEN_SECRET = "9tcQ39YWNo9Fnmt55yJvFhGupxfZg54tBla8Lin5JtAmk";
+        string tweet = "test";
 
         public MainPage()
         {
@@ -43,27 +47,43 @@ namespace FashionFace
 
             Console.WriteLine("I am listening to Twitter");
 
-            stream.MatchingTweetReceived += (sender, argument) =>
-            {
-                //   testi.Content = argument.Tweet.Text;
-                //         TextBlock textBlock1 = new TextBlock();
+            this.InitializeComponent();
 
-                //        testi.Content = argument.Tweet.Text;
-                changeText(argument.Tweet.Text);
-                tweetText.Text = argument.Tweet.Text;
-            };
+
+                 stream.MatchingTweetReceived += ChangeTextMethodAsync;
+
+
+
+
+
             
             
             stream.StartStreamMatchingAllConditionsAsync();
 
 
-            this.InitializeComponent();
+           
 
+//            Task t = changeText("Test");
+            
+            
+            
+        }
 
+        private async void ChangeTextMethodAsync(object sender, MatchedTweetReceivedEventArgs e)
+        {
+            tweet = "sgdfhj";
+           await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+            () =>
+            {
 
+                tweetText.Text = e.Tweet.Text;
+                // Update UI 
+            });
+        }
 
-       //     stream.StopStream();
-     //       stream.AddTweetLanguageFilter()
+        void test()
+        {
+            
         }
 
         private async Task<object> changeText(string text)
